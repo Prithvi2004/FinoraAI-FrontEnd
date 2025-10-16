@@ -2,17 +2,24 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-background.jpg";
 import { Sparkles, ChevronRight, BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface HeroSectionProps {
   onBuildProfile: () => void;
   isAuthenticated: boolean;
+  hasProfile: boolean;
 }
 
-export const HeroSection = ({ onBuildProfile, isAuthenticated }: HeroSectionProps) => {
+export const HeroSection = ({
+  onBuildProfile,
+  isAuthenticated,
+  hasProfile,
+}: HeroSectionProps) => {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroBackground})` }}
       >
@@ -21,7 +28,10 @@ export const HeroSection = ({ onBuildProfile, isAuthenticated }: HeroSectionProp
 
       {/* Animated Glow Effects */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse-slow" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: "2s" }} />
+      <div
+        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-pulse-slow"
+        style={{ animationDelay: "2s" }}
+      />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4">
@@ -61,7 +71,8 @@ export const HeroSection = ({ onBuildProfile, isAuthenticated }: HeroSectionProp
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Finora uses deep-learning intelligence to turn your income, goals, and risk profile into a living investment strategy—automatically.
+            Finora uses deep-learning intelligence to turn your income, goals,
+            and risk profile into a living investment strategy—automatically.
           </motion.p>
 
           {/* CTA Button */}
@@ -72,18 +83,30 @@ export const HeroSection = ({ onBuildProfile, isAuthenticated }: HeroSectionProp
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             {isAuthenticated ? (
-              <Button
-                size="lg"
-                onClick={onBuildProfile}
-                className="group relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-xl glow-cyan transition-all duration-300 hover:scale-105"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  Build Your Profile
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </Button>
+              <>
+                <Button
+                  size="lg"
+                  onClick={onBuildProfile}
+                  className="group relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-xl glow-cyan transition-all duration-300 hover:scale-105"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    {hasProfile ? "Edit Your Profile" : "Build Your Profile"}
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Button>
+                {/* Dashboard Button: Only after login and profile filled */}
+                {hasProfile && (
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-primary to-secondary text-white font-bold px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Go to Dashboard
+                  </Button>
+                )}
+              </>
             ) : (
               <Button
                 size="lg"

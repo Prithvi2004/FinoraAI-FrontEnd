@@ -6,11 +6,11 @@ import { HeroSection } from "@/components/HeroSection";
 import { FeatureOrbit } from "@/components/FeatureOrbit";
 import { ProfileModal } from "@/components/ProfileModal";
 import { Button } from "@/components/ui/button";
-import { Lock, Fingerprint, User, LogOut, BookOpen } from "lucide-react";
+import { Lock, Fingerprint, User, LogOut } from "lucide-react";
 
 const Index = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, profile, hasProfile } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -62,7 +62,7 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <HeroSection 
+      <HeroSection
         onBuildProfile={() => {
           if (user) {
             setIsProfileModalOpen(true);
@@ -71,6 +71,7 @@ const Index = () => {
           }
         }}
         isAuthenticated={!!user}
+        hasProfile={hasProfile}
       />
 
       {/* Features Section */}
@@ -90,8 +91,8 @@ const Index = () => {
             </div>
             <h3 className="text-3xl font-bold mb-4">Zero-Data Policy</h3>
             <p className="text-lg text-muted-foreground mb-6">
-              We train on patterns, never your identity. Your financial data is encrypted, 
-              anonymized, and yours alone.
+              We train on patterns, never your identity. Your financial data is
+              encrypted, anonymized, and yours alone.
             </p>
             <div className="flex items-center justify-center gap-2 text-sm text-primary">
               <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
@@ -115,6 +116,7 @@ const Index = () => {
         <ProfileModal
           isOpen={isProfileModalOpen}
           onClose={() => setIsProfileModalOpen(false)}
+          isEditing={hasProfile}
         />
       )}
     </div>
