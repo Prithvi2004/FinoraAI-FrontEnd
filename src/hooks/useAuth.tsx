@@ -1,10 +1,30 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  User as FirebaseUser,
+  signInWithPopup,
+} from "firebase/auth";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "@/services/firebase";
+import { GoogleAuthProvider } from "firebase/auth";
 
 interface User {
   id: string;
   email: string;
   name: string;
+  emailVerified?: boolean;
+  photoURL?: string;
 }
 
 interface UserProfile {
@@ -38,10 +58,12 @@ interface UserProfile {
 interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
-  logout: () => void;
-  saveProfile: (profile: UserProfile) => void;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<void>;
+  saveProfile: (profile: UserProfile) => Promise<void>;
   hasProfile: boolean;
 }
 
@@ -50,95 +72,157 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for existing session
-    const storedUser = localStorage.getItem("finora_user");
-    const storedProfile = localStorage.getItem("finora_profile");
-    
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    if (storedProfile) {
-      setProfile(JSON.parse(storedProfile));
-    }
+    // Listen to Firebase auth state changes
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const userData: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email || "",
+          name: firebaseUser.displayName || "",
+          emailVerified: firebaseUser.emailVerified,
+          photoURL: firebaseUser.photoURL || undefined,
+        };
+        setUser(userData);
+        // Load profile from Firestore
+        try {
+          const profileDoc = await getDoc(
+            doc(db, "userProfiles", firebaseUser.uid)
+          );
+          if (profileDoc.exists()) {
+            setProfile(profileDoc.data() as UserProfile);
+          } else {
+            setProfile(null);
+          }
+        } catch {
+          setProfile(null);
+        }
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // Simulate API call
-    const storedUsers = JSON.parse(localStorage.getItem("finora_users") || "[]");
-    const foundUser = storedUsers.find(
-      (u: any) => u.email === email && u.password === password
+  const saveUserDetails = async (firebaseUser: FirebaseUser) => {
+    const userRef = doc(db, "users", firebaseUser.uid);
+    await setDoc(
+      userRef,
+      {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        displayName: firebaseUser.displayName || "",
+        photoURL: firebaseUser.photoURL || null,
+        emailVerified: firebaseUser.emailVerified,
+        lastLoginAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+      },
+      { merge: true }
     );
+  };
 
-    if (!foundUser) {
-      throw new Error("Invalid credentials");
+  const login = async (email: string, password: string) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const firebaseUser = userCredential.user;
+      await saveUserDetails(firebaseUser);
+      setUser({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        name: firebaseUser.displayName || "",
+        emailVerified: firebaseUser.emailVerified,
+        photoURL: firebaseUser.photoURL || undefined,
+      });
+      // Load profile
+      const profileDoc = await getDoc(
+        doc(db, "userProfiles", firebaseUser.uid)
+      );
+      if (profileDoc.exists()) {
+        setProfile(profileDoc.data() as UserProfile);
+      } else {
+        setProfile(null);
+      }
+      navigate("/");
+    } catch (error: any) {
+      throw new Error(error.message || "Authentication failed");
     }
-
-    const userData = {
-      id: foundUser.id,
-      email: foundUser.email,
-      name: foundUser.name,
-    };
-
-    setUser(userData);
-    localStorage.setItem("finora_user", JSON.stringify(userData));
-    
-    // Load profile if exists
-    const userProfile = localStorage.getItem(`finora_profile_${foundUser.id}`);
-    if (userProfile) {
-      const parsedProfile = JSON.parse(userProfile);
-      setProfile(parsedProfile);
-      localStorage.setItem("finora_profile", userProfile);
-    }
-
-    navigate("/");
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    // Simulate API call
-    const storedUsers = JSON.parse(localStorage.getItem("finora_users") || "[]");
-    
-    if (storedUsers.find((u: any) => u.email === email)) {
-      throw new Error("User already exists");
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const firebaseUser = userCredential.user;
+      await updateProfile(firebaseUser, { displayName: name });
+      await saveUserDetails(firebaseUser);
+      setUser({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        name,
+        emailVerified: firebaseUser.emailVerified,
+        photoURL: firebaseUser.photoURL || undefined,
+      });
+      // Create empty profile
+      await setDoc(doc(db, "userProfiles", firebaseUser.uid), {});
+      setProfile(null);
+      navigate("/");
+    } catch (error: any) {
+      throw new Error(error.message || "Signup failed");
     }
-
-    const newUser = {
-      id: Math.random().toString(36).substring(7),
-      email,
-      password,
-      name,
-    };
-
-    storedUsers.push(newUser);
-    localStorage.setItem("finora_users", JSON.stringify(storedUsers));
-
-    const userData = {
-      id: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
-    };
-
-    setUser(userData);
-    localStorage.setItem("finora_user", JSON.stringify(userData));
-    navigate("/");
   };
 
-  const logout = () => {
+  const loginWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const firebaseUser = result.user;
+      await saveUserDetails(firebaseUser);
+      setUser({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        name: firebaseUser.displayName || "",
+        emailVerified: firebaseUser.emailVerified,
+        photoURL: firebaseUser.photoURL || undefined,
+      });
+      // Create profile if not exists
+      const profileDoc = await getDoc(
+        doc(db, "userProfiles", firebaseUser.uid)
+      );
+      if (!profileDoc.exists()) {
+        await setDoc(doc(db, "userProfiles", firebaseUser.uid), {});
+        setProfile(null);
+      } else {
+        setProfile(profileDoc.data() as UserProfile);
+      }
+      navigate("/");
+    } catch (error: any) {
+      throw new Error(error.message || "Google login failed");
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
     setUser(null);
     setProfile(null);
-    localStorage.removeItem("finora_user");
-    localStorage.removeItem("finora_profile");
     navigate("/");
   };
 
-  const saveProfile = (newProfile: UserProfile) => {
+  const saveProfile = async (newProfile: UserProfile) => {
+    if (!user) throw new Error("User not authenticated");
+    await setDoc(doc(db, "userProfiles", user.id), newProfile);
     setProfile(newProfile);
-    localStorage.setItem("finora_profile", JSON.stringify(newProfile));
-    if (user) {
-      localStorage.setItem(`finora_profile_${user.id}`, JSON.stringify(newProfile));
-    }
     navigate("/dashboard");
   };
 
@@ -147,8 +231,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         user,
         profile,
+        loading,
         login,
         signup,
+        loginWithGoogle,
         logout,
         saveProfile,
         hasProfile: !!profile,

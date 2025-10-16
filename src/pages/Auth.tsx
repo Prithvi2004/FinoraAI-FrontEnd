@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Mail, User, Fingerprint } from "lucide-react";
 import { toast } from "sonner";
+import { FcGoogle } from "react-icons/fc";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,7 +14,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, signup } = useAuth();
+  const { login, signup, loginWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +54,9 @@ const Auth = () => {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gradient-primary mb-2">Finora</h1>
+          <h1 className="text-4xl font-bold text-gradient-primary mb-2">
+            Finora
+          </h1>
           <p className="text-muted-foreground">Your Financial Digital Twin</p>
         </div>
 
@@ -139,8 +142,34 @@ const Auth = () => {
             disabled={loading}
           >
             <Fingerprint className="w-5 h-5 mr-2 group-hover:text-primary-foreground" />
-            {loading ? "Processing..." : isLogin ? "Secure Login" : "Create Account"}
+            {loading
+              ? "Processing..."
+              : isLogin
+              ? "Secure Login"
+              : "Create Account"}
           </Button>
+          {isLogin && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2 mt-4 border border-primary/30"
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  await loginWithGoogle();
+                  toast.success("Logged in with Google!");
+                } catch (error: any) {
+                  toast.error(error.message || "Google login failed");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+            >
+              <FcGoogle className="w-5 h-5" />
+              Continue with Google
+            </Button>
+          )}
         </form>
 
         {/* Trust Badge */}
