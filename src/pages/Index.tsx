@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { HeroSection } from "@/components/HeroSection";
 import { FeatureOrbit } from "@/components/FeatureOrbit";
-import { OnboardingModal } from "@/components/OnboardingModal";
+import { ProfileModal } from "@/components/ProfileModal";
 import { Button } from "@/components/ui/button";
-import { Lock, Fingerprint } from "lucide-react";
+import { Lock, Fingerprint, User, LogOut, BookOpen } from "lucide-react";
 
 const Index = () => {
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -25,21 +29,49 @@ const Index = () => {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2"
           >
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary group"
-            >
-              <Fingerprint className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
-              <Lock className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
-              <span>Secure Login</span>
-            </Button>
+            {user ? (
+              <>
+                <div className="flex items-center gap-2 px-3 py-2 glass-panel rounded-lg">
+                  <User className="w-4 h-4 text-primary" />
+                  <span className="font-semibold">{user.name}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={logout}
+                  className="text-foreground hover:text-destructive"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/auth")}
+                className="text-foreground hover:text-primary group"
+              >
+                <Fingerprint className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
+                <Lock className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
+                <span>Secure Login</span>
+              </Button>
+            )}
           </motion.div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <HeroSection onBuildProfile={() => setIsOnboardingOpen(true)} />
+      <HeroSection 
+        onBuildProfile={() => {
+          if (user) {
+            setIsProfileModalOpen(true);
+          } else {
+            navigate("/auth");
+          }
+        }}
+        isAuthenticated={!!user}
+      />
 
       {/* Features Section */}
       <FeatureOrbit />
@@ -78,11 +110,13 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* Onboarding Modal */}
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
-      />
+      {/* Profile Modal */}
+      {user && (
+        <ProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
