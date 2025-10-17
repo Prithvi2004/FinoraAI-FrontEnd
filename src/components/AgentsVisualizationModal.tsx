@@ -21,158 +21,249 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect, useRef } from "react";
 
 interface AgentsVisualizationModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// Define 18 different agents with unique properties
+interface DataPulse {
+  id: string;
+  from: number;
+  to: number;
+  progress: number;
+}
+
+// Define 18 specialized financial agents with organic neural network positions
 const agents = [
   {
     id: 1,
-    name: "Market Analyzer",
-    icon: TrendingUp,
-    color: "from-blue-500 to-cyan-500",
-    position: { x: 0, y: 0 },
+    name: "Master Orchestrator",
+    icon: Cpu,
+    color: "from-purple-600 to-pink-600",
+    category: "Core",
+    x: 50, // center
+    y: 50,
   },
   {
     id: 2,
-    name: "Risk Assessor",
-    icon: Shield,
-    color: "from-red-500 to-orange-500",
-    position: { x: 1, y: 0 },
+    name: "Life Context & Empathy",
+    icon: Brain,
+    color: "from-rose-500 to-pink-500",
+    category: "Context",
+    x: 30,
+    y: 20,
   },
   {
     id: 3,
-    name: "Data Miner",
+    name: "Financial Clarity",
     icon: Search,
-    color: "from-purple-500 to-pink-500",
-    position: { x: 2, y: 0 },
+    color: "from-blue-500 to-cyan-500",
+    category: "Guidance",
+    x: 70,
+    y: 25,
   },
   {
     id: 4,
-    name: "Portfolio Optimizer",
+    name: "Action Pathfinder",
     icon: Target,
     color: "from-green-500 to-emerald-500",
-    position: { x: 0, y: 1 },
+    category: "Planning",
+    x: 85,
+    y: 45,
   },
   {
     id: 5,
-    name: "Sentiment Analyzer",
-    icon: Brain,
-    color: "from-indigo-500 to-purple-500",
-    position: { x: 1, y: 1 },
+    name: "Cash Flow Architect",
+    icon: Activity,
+    color: "from-cyan-500 to-blue-500",
+    category: "Planning",
+    x: 80,
+    y: 70,
   },
   {
     id: 6,
-    name: "Price Predictor",
-    icon: DollarSign,
-    color: "from-yellow-500 to-amber-500",
-    position: { x: 2, y: 1 },
+    name: "Debt Strategist",
+    icon: TrendingUp,
+    color: "from-orange-500 to-red-500",
+    category: "Planning",
+    x: 60,
+    y: 85,
   },
   {
     id: 7,
-    name: "Chart Pattern",
-    icon: BarChart3,
-    color: "from-teal-500 to-cyan-500",
-    position: { x: 0, y: 2 },
+    name: "Tax Optimizer",
+    icon: DollarSign,
+    color: "from-yellow-500 to-amber-500",
+    category: "Planning",
+    x: 35,
+    y: 80,
   },
   {
     id: 8,
-    name: "Volatility Tracker",
-    icon: Activity,
-    color: "from-rose-500 to-red-500",
-    position: { x: 1, y: 2 },
+    name: "Life-Stage Architect",
+    icon: BarChart3,
+    color: "from-indigo-500 to-purple-500",
+    category: "Planning",
+    x: 15,
+    y: 60,
   },
   {
     id: 9,
-    name: "Execution Engine",
-    icon: Zap,
-    color: "from-orange-500 to-yellow-500",
-    position: { x: 2, y: 2 },
+    name: "Asset Allocation",
+    icon: PieChart,
+    color: "from-violet-500 to-purple-500",
+    category: "Investment",
+    x: 20,
+    y: 40,
   },
   {
     id: 10,
-    name: "Trend Forecaster",
+    name: "Market Timing",
     icon: LineChart,
-    color: "from-blue-600 to-indigo-600",
-    position: { x: 0, y: 3 },
+    color: "from-teal-500 to-cyan-500",
+    category: "Investment",
+    x: 45,
+    y: 25,
   },
   {
     id: 11,
-    name: "Asset Allocator",
-    icon: PieChart,
-    color: "from-violet-500 to-purple-500",
-    position: { x: 1, y: 3 },
+    name: "Alternative Investments",
+    icon: Globe,
+    color: "from-emerald-500 to-green-500",
+    category: "Investment",
+    x: 65,
+    y: 15,
   },
   {
     id: 12,
-    name: "Global Monitor",
-    icon: Globe,
-    color: "from-cyan-500 to-blue-500",
-    position: { x: 2, y: 3 },
+    name: "ESG Advisor",
+    icon: CheckCircle,
+    color: "from-green-600 to-emerald-600",
+    category: "Investment",
+    x: 90,
+    y: 30,
   },
   {
     id: 13,
-    name: "Data Aggregator",
-    icon: Database,
-    color: "from-emerald-500 to-green-500",
-    position: { x: 0, y: 4 },
+    name: "Risk Intelligence",
+    icon: Shield,
+    color: "from-red-500 to-orange-500",
+    category: "Risk",
+    x: 92,
+    y: 55,
   },
   {
     id: 14,
-    name: "Security Guard",
+    name: "Compliance Officer",
     icon: Lock,
-    color: "from-gray-500 to-slate-500",
-    position: { x: 1, y: 4 },
+    color: "from-gray-500 to-slate-600",
+    category: "Governance",
+    x: 75,
+    y: 90,
   },
   {
     id: 15,
-    name: "Alert System",
+    name: "Wellness Coach",
     icon: AlertCircle,
-    color: "from-red-600 to-orange-600",
-    position: { x: 2, y: 4 },
+    color: "from-pink-500 to-rose-500",
+    category: "Support",
+    x: 50,
+    y: 75,
   },
   {
     id: 16,
-    name: "Validator",
-    icon: CheckCircle,
-    color: "from-green-600 to-emerald-600",
-    position: { x: 0, y: 5 },
+    name: "Literacy Tutor",
+    icon: Database,
+    color: "from-blue-600 to-indigo-600",
+    category: "Education",
+    x: 25,
+    y: 90,
   },
   {
     id: 17,
-    name: "Processing Core",
-    icon: Cpu,
-    color: "from-purple-600 to-pink-600",
-    position: { x: 1, y: 5 },
+    name: "Stress Tester",
+    icon: Zap,
+    color: "from-orange-600 to-yellow-600",
+    category: "Analysis",
+    x: 10,
+    y: 75,
   },
   {
     id: 18,
-    name: "Network Sync",
+    name: "Capability Builder",
     icon: Network,
     color: "from-cyan-600 to-teal-600",
-    position: { x: 2, y: 5 },
+    category: "Growth",
+    x: 8,
+    y: 50,
   },
-];
-
-// Agent status messages
-const agentStatuses = [
-  "Analyzing market data...",
-  "Processing signals...",
-  "Computing patterns...",
-  "Evaluating risks...",
-  "Optimizing portfolio...",
-  "Scanning trends...",
-  "Validating data...",
-  "Executing strategy...",
 ];
 
 export const AgentsVisualizationModal = ({
   isOpen,
   onClose,
 }: AgentsVisualizationModalProps) => {
+  const [dataPulses, setDataPulses] = useState<DataPulse[]>([]);
+  const [hoveredNode, setHoveredNode] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Generate random data pulses between nodes
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const interval = setInterval(() => {
+      const fromId = Math.floor(Math.random() * agents.length) + 1;
+      let toId = Math.floor(Math.random() * agents.length) + 1;
+
+      // Ensure different nodes
+      while (toId === fromId) {
+        toId = Math.floor(Math.random() * agents.length) + 1;
+      }
+
+      const newPulse: DataPulse = {
+        id: `${Date.now()}-${Math.random()}`,
+        from: fromId,
+        to: toId,
+        progress: 0,
+      };
+
+      setDataPulses((prev) => [...prev.slice(-8), newPulse]); // Keep max 9 pulses
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, [isOpen]);
+
+  // Animate pulse progress
+  useEffect(() => {
+    if (dataPulses.length === 0) return;
+
+    const interval = setInterval(() => {
+      setDataPulses((prev) =>
+        prev
+          .map((pulse) => ({
+            ...pulse,
+            progress: pulse.progress + 0.02,
+          }))
+          .filter((pulse) => pulse.progress < 1)
+      );
+    }, 16);
+
+    return () => clearInterval(interval);
+  }, [dataPulses.length]);
+
+  const getNodePosition = (
+    agent: (typeof agents)[0],
+    containerWidth: number,
+    containerHeight: number
+  ) => {
+    return {
+      x: (agent.x / 100) * containerWidth,
+      y: (agent.y / 100) * containerHeight,
+    };
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -183,11 +274,11 @@ export const AgentsVisualizationModal = ({
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={onClose}
         >
-          {/* Backdrop with blur */}
+          {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            className="absolute inset-0 bg-black/70 backdrop-blur-xl"
             initial={{ backdropFilter: "blur(0px)" }}
-            animate={{ backdropFilter: "blur(12px)" }}
+            animate={{ backdropFilter: "blur(16px)" }}
             exit={{ backdropFilter: "blur(0px)" }}
           />
 
@@ -200,31 +291,29 @@ export const AgentsVisualizationModal = ({
             className="relative w-full max-w-7xl max-h-[90vh] bg-gradient-to-br from-slate-950/95 to-slate-900/95 border border-cyan-500/30 rounded-3xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Animated gradient background */}
-            <div className="absolute inset-0 opacity-30">
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20"
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                style={{ backgroundSize: "200% 200%" }}
-              />
-            </div>
+            {/* Solid gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 opacity-95" />
+
+            {/* Subtle animated gradient overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{ backgroundSize: "200% 200%" }}
+            />
 
             {/* Header */}
             <div className="relative z-10 flex items-center justify-between p-6 border-b border-cyan-500/30">
               <div>
                 <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-                  AI Agents Neural Network
+                  Agentic Financial Intelligence
                 </h2>
-                <p className="text-slate-400 mt-1">
-                  18 Specialized Agents Working in Harmony
-                </p>
               </div>
               <Button
                 variant="ghost"
@@ -236,320 +325,299 @@ export const AgentsVisualizationModal = ({
               </Button>
             </div>
 
-            {/* Main Visualization Area */}
-            <div className="relative z-10 p-8 overflow-y-auto max-h-[calc(90vh-120px)] custom-scrollbar">
-              {/* Central Hub */}
-              <div className="relative flex items-center justify-center mb-12">
-                <motion.div
-                  className="relative w-48 h-48"
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                >
-                  {/* Central Brain */}
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-cyan-500/50">
-                      <Brain className="w-16 h-16 text-white" />
-                    </div>
-                  </motion.div>
-
-                  {/* Pulsing rings */}
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute inset-0 rounded-full border-2 border-cyan-400/30"
-                      animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [0.5, 0, 0.5],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        delay: i * 1,
-                      }}
-                    />
-                  ))}
-                </motion.div>
-
-                {/* Text overlay */}
-                <motion.div
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <div className="text-white font-bold text-xl mt-48">
-                    Central Intelligence
+            {/* Info panel */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="relative z-20 mx-6 mt-2 bg-slate-900/80 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-sm text-slate-300">
+                      <span className="font-bold text-white">
+                        {agents.length}
+                      </span>{" "}
+                      Agents Active
+                    </span>
                   </div>
-                  <div className="text-cyan-400 text-sm">
-                    Orchestrating 18 Agents
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-cyan-400" />
+                    <span className="text-sm text-slate-300">
+                      <span className="font-bold text-white">
+                        {dataPulses.length}
+                      </span>{" "}
+                      Data Streams
+                    </span>
                   </div>
-                </motion.div>
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-yellow-400" />
+                    <span className="text-sm text-slate-300">
+                      Agentic Network Active
+                    </span>
+                  </div>
+                </div>
+                <div className="text-xs text-slate-400">
+                  Hover over nodes to view details
+                </div>
               </div>
+            </motion.div>
 
-              {/* Agents Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
-                {agents.map((agent, index) => {
-                  const Icon = agent.icon;
+            {/* Neural Network Visualization */}
+            <div
+              ref={containerRef}
+              className="relative z-10 w-full h-[calc(90vh-180px)] overflow-hidden mt-0"
+            >
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                style={{ zIndex: 1 }}
+              >
+                {/* Static connection lines */}
+                {agents.map((fromAgent) =>
+                  agents
+                    .filter((toAgent) => toAgent.id !== fromAgent.id)
+                    .slice(0, 3) // Each node connects to 3 others
+                    .map((toAgent) => {
+                      const fromPos = getNodePosition(
+                        fromAgent,
+                        containerRef.current?.clientWidth || 1200,
+                        containerRef.current?.clientHeight || 600
+                      );
+                      const toPos = getNodePosition(
+                        toAgent,
+                        containerRef.current?.clientWidth || 1200,
+                        containerRef.current?.clientHeight || 600
+                      );
+
+                      return (
+                        <line
+                          key={`${fromAgent.id}-${toAgent.id}`}
+                          x1={fromPos.x}
+                          y1={fromPos.y}
+                          x2={toPos.x}
+                          y2={toPos.y}
+                          stroke="rgba(34, 211, 238, 0.1)"
+                          strokeWidth="1"
+                        />
+                      );
+                    })
+                )}
+
+                {/* Animated data pulses */}
+                {dataPulses.map((pulse) => {
+                  const fromAgent = agents.find((a) => a.id === pulse.from);
+                  const toAgent = agents.find((a) => a.id === pulse.to);
+
+                  if (!fromAgent || !toAgent) return null;
+
+                  const fromPos = getNodePosition(
+                    fromAgent,
+                    containerRef.current?.clientWidth || 1200,
+                    containerRef.current?.clientHeight || 600
+                  );
+                  const toPos = getNodePosition(
+                    toAgent,
+                    containerRef.current?.clientWidth || 1200,
+                    containerRef.current?.clientHeight || 600
+                  );
+
+                  const currentX =
+                    fromPos.x + (toPos.x - fromPos.x) * pulse.progress;
+                  const currentY =
+                    fromPos.y + (toPos.y - fromPos.y) * pulse.progress;
+
                   return (
-                    <motion.div
-                      key={agent.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: index * 0.05,
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                      }}
-                      className="relative group"
-                    >
-                      {/* Connection line to center (visual effect) */}
-                      <motion.div
-                        className="absolute left-1/2 bottom-full h-20 w-0.5 bg-gradient-to-t from-cyan-500/50 to-transparent"
-                        initial={{ scaleY: 0 }}
-                        animate={{ scaleY: 1 }}
-                        transition={{ delay: index * 0.05 + 0.3 }}
+                    <g key={pulse.id}>
+                      {/* Pulse line */}
+                      <line
+                        x1={fromPos.x}
+                        y1={fromPos.y}
+                        x2={currentX}
+                        y2={currentY}
+                        stroke="rgba(34, 211, 238, 0.6)"
+                        strokeWidth="2"
+                        strokeLinecap="round"
                       />
-
-                      {/* Agent Card */}
-                      <motion.div
-                        className="relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-cyan-500/30 rounded-xl p-4 hover:border-cyan-400/60 transition-all duration-300 overflow-hidden"
-                        whileHover={{ scale: 1.05, y: -5 }}
+                      {/* Pulse dot */}
+                      <circle
+                        cx={currentX}
+                        cy={currentY}
+                        r="4"
+                        fill="#22d3ee"
+                        filter="url(#glow)"
                       >
-                        {/* Animated background gradient */}
-                        <motion.div
-                          className={`absolute inset-0 bg-gradient-to-br ${agent.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                        <animate
+                          attributeName="r"
+                          values="4;6;4"
+                          dur="0.5s"
+                          repeatCount="indefinite"
                         />
-
-                        {/* Agent Icon */}
-                        <motion.div
-                          className="relative flex items-center justify-center mb-3"
-                          animate={{
-                            rotate: [0, 5, -5, 0],
-                          }}
-                          transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            delay: index * 0.2,
-                          }}
-                        >
-                          <div
-                            className={`w-12 h-12 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center shadow-lg`}
-                          >
-                            <Icon className="w-6 h-6 text-white" />
-                          </div>
-
-                          {/* Status indicator */}
-                          <motion.div
-                            className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-500"
-                            animate={{
-                              scale: [1, 1.2, 1],
-                              opacity: [1, 0.7, 1],
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                            }}
-                          />
-                        </motion.div>
-
-                        {/* Agent Info */}
-                        <div className="relative text-center">
-                          <h3 className="text-xs font-semibold text-white mb-1">
-                            {agent.name}
-                          </h3>
-                          <motion.p
-                            className="text-[10px] text-cyan-400"
-                            animate={{
-                              opacity: [0.5, 1, 0.5],
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              delay: index * 0.1,
-                            }}
-                          >
-                            {agentStatuses[index % agentStatuses.length]}
-                          </motion.p>
-                        </div>
-
-                        {/* Data flow particles */}
-                        <motion.div
-                          className="absolute top-0 left-1/2 w-1 h-1 rounded-full bg-cyan-400"
-                          animate={{
-                            y: [0, 60],
-                            opacity: [0, 1, 0],
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: index * 0.3,
-                          }}
-                        />
-                      </motion.div>
-                    </motion.div>
+                      </circle>
+                    </g>
                   );
                 })}
-              </div>
 
-              {/* Network Activity Visualization */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Processing Speed */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1 }}
-                  className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-cyan-500/30 rounded-xl p-6"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white">
-                      Processing Speed
-                    </h3>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Queries/sec</span>
-                      <motion.span
-                        className="text-cyan-400 font-semibold"
-                        animate={{ opacity: [1, 0.5, 1] }}
-                        transition={{ duration: 1, repeat: Infinity }}
-                      >
-                        1,247
-                      </motion.span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
-                        animate={{ width: ["70%", "95%", "70%"] }}
-                        transition={{ duration: 3, repeat: Infinity }}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
+                {/* Glow filter for pulses */}
+                <defs>
+                  <filter
+                    id="glow"
+                    x="-50%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                  >
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                    <feMerge>
+                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+              </svg>
 
-                {/* Active Connections */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1 }}
-                  className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-cyan-500/30 rounded-xl p-6"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Network className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white">
-                      Neural Pathways
-                    </h3>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Active Links</span>
-                      <motion.span
-                        className="text-purple-400 font-semibold"
-                        animate={{ opacity: [1, 0.5, 1] }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                      >
-                        153
-                      </motion.span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                        animate={{ width: ["60%", "90%", "60%"] }}
-                        transition={{ duration: 2.5, repeat: Infinity }}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
+              {/* Neural nodes */}
+              {agents.map((agent, index) => {
+                const Icon = agent.icon;
+                const isMaster = agent.id === 1;
+                const isHovered = hoveredNode === agent.id;
 
-                {/* Data Throughput */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.2 }}
-                  className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-cyan-500/30 rounded-xl p-6"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
-                      <Activity className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white">
-                      Data Throughput
-                    </h3>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">MB/sec</span>
-                      <motion.span
-                        className="text-green-400 font-semibold"
-                        animate={{ opacity: [1, 0.5, 1] }}
-                        transition={{ duration: 1.2, repeat: Infinity }}
-                      >
-                        89.3
-                      </motion.span>
-                    </div>
-                    <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
-                        animate={{ width: ["75%", "85%", "75%"] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Real-time Activity Feed */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.3 }}
-                className="mt-6 bg-gradient-to-br from-slate-800/40 to-slate-900/40 border border-cyan-500/20 rounded-xl p-6"
-              >
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-cyan-400" />
-                  Live Activity Stream
-                </h3>
-                <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                  {agents.slice(0, 8).map((agent, index) => (
+                return (
+                  <motion.div
+                    key={agent.id}
+                    className="absolute cursor-pointer"
+                    style={{
+                      left: `${agent.x}%`,
+                      top: `${agent.y}%`,
+                      transform: "translate(-50%, -50%)",
+                      zIndex: isHovered ? 100 : isMaster ? 50 : 10,
+                    }}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{
+                      scale: 1,
+                      opacity: 1,
+                      x: [0, Math.sin(index) * 3, 0],
+                      y: [0, Math.cos(index) * 3, 0],
+                    }}
+                    transition={{
+                      scale: { delay: index * 0.05, duration: 0.4 },
+                      x: {
+                        duration: 3 + index * 0.2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      },
+                      y: {
+                        duration: 4 + index * 0.15,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      },
+                    }}
+                    whileHover={{ scale: 1.2 }}
+                    onMouseEnter={() => setHoveredNode(agent.id)}
+                    onMouseLeave={() => setHoveredNode(null)}
+                  >
+                    {/* Node sphere */}
                     <motion.div
-                      key={agent.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.5 + index * 0.1 }}
-                      className="flex items-center gap-3 text-sm py-2 border-b border-slate-700/50"
+                      className={`relative ${
+                        isMaster ? "w-20 h-20" : "w-16 h-16"
+                      } rounded-full`}
+                      animate={{
+                        boxShadow: [
+                          `0 0 20px rgba(34, 211, 238, 0.3)`,
+                          `0 0 40px rgba(34, 211, 238, 0.6)`,
+                          `0 0 20px rgba(34, 211, 238, 0.3)`,
+                        ],
+                      }}
+                      transition={{ duration: 2, repeat: Infinity }}
                     >
+                      {/* Node glow rings */}
+                      {(isMaster || isHovered) && (
+                        <>
+                          {[0, 1, 2].map((i) => (
+                            <motion.div
+                              key={i}
+                              className={`absolute rounded-full border-2 ${
+                                isMaster
+                                  ? "border-purple-400/40"
+                                  : "border-cyan-400/40"
+                              }`}
+                              style={{
+                                width: isMaster ? 100 : 80,
+                                height: isMaster ? 100 : 80,
+                                left: "50%",
+                                top: "50%",
+                                transform: "translate(-50%, -50%)",
+                              }}
+                              animate={{
+                                scale: [1, 1.5, 1],
+                                opacity: [0.5, 0, 0.5],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                delay: i * 0.6,
+                              }}
+                            />
+                          ))}
+                        </>
+                      )}
+
+                      {/* Gradient background */}
+                      <div
+                        className={`absolute inset-0 rounded-full bg-gradient-to-br ${agent.color} opacity-90`}
+                      />
+
+                      {/* Glass shine effect */}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/30 to-transparent" />
+
+                      {/* Icon */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Icon
+                          className={`${
+                            isMaster ? "w-10 h-10" : "w-8 h-8"
+                          } text-white z-10`}
+                        />
+                      </div>
+
+                      {/* Activity pulse */}
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-green-500"
-                        animate={{ scale: [1, 1.3, 1] }}
+                        className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-400"
+                        animate={{
+                          scale: [1, 1.3, 1],
+                          opacity: [1, 0.6, 1],
+                        }}
                         transition={{
-                          duration: 2,
+                          duration: 1.5,
                           repeat: Infinity,
-                          delay: index * 0.2,
                         }}
                       />
-                      <span className="text-slate-400 flex-1">
-                        {agent.name}
-                      </span>
-                      <span className="text-cyan-400 text-xs">
-                        {agentStatuses[index % agentStatuses.length]}
-                      </span>
                     </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+
+                    {/* Node label (on hover or for master) */}
+                    <AnimatePresence>
+                      {(isHovered || isMaster) && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 whitespace-nowrap"
+                        >
+                          <div className="px-4 py-2 rounded-xl bg-slate-900/95 border border-cyan-500/50 backdrop-blur-xl shadow-2xl">
+                            <p className="text-sm font-bold text-white">
+                              {agent.name}
+                            </p>
+                            <p className="text-xs text-cyan-400">
+                              {agent.category}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </motion.div>
