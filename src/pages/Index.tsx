@@ -33,28 +33,51 @@ const Index = () => {
           >
             {user ? (
               <>
-                <div className="flex items-center gap-2 px-3 py-2 glass-panel rounded-lg">
-                  <User className="w-4 h-4 text-primary" />
-                  <span className="font-semibold">{user.name}</span>
-                </div>
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative flex items-center gap-3 px-4 py-2.5 glass-panel rounded-xl border border-primary/20 hover:border-primary/40 transition-all duration-300 cursor-pointer group"
+                >
+                  {/* Gradient Border Effect */}
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm" />
+
+                  {/* Avatar with Status Indicator */}
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary via-secondary to-primary flex items-center justify-center glow-cyan ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-300">
+                      <User className="w-5 h-5 text-white" />
+                    </div>
+                    {/* Online Status Indicator */}
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+                  </div>
+
+                  {/* User Info */}
+                  <div className="flex flex-col">
+                    <span className="font-semibold text group-hover:text-primary transition-colors duration-300">
+                      {user.name}
+                    </span>
+                  </div>
+                </motion.div>
+
                 <Button
                   variant="ghost"
                   onClick={logout}
-                  className="text-foreground hover:text-destructive"
+                  className="text-foreground hover:text-destructive hover:bg-destructive/10 group transition-all duration-300"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
+                  <LogOut className="w-4 h-4 mr-2 text-foreground group-hover:text-destructive transition-colors duration-300" />
+                  <span className="transition-colors duration-300">Logout</span>
                 </Button>
               </>
             ) : (
               <Button
                 variant="ghost"
                 onClick={() => navigate("/auth")}
-                className="text-foreground hover:text-primary group"
+                className="text-foreground hover:text-primary hover:bg-primary/10 group transition-all duration-300"
               >
-                <Fingerprint className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
-                <Lock className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
-                <span>Secure Login</span>
+                <Lock className="w-4 h-4 mr-2 text-foreground group-hover:text-primary transition-colors duration-300" />
+                <span className="transition-colors duration-300">
+                  Secure Login
+                </span>
               </Button>
             )}
           </motion.div>

@@ -380,9 +380,9 @@ const Dashboard = () => {
                 whileTap={{ scale: 0.98 }}
                 animate={{
                   boxShadow: [
-                    "0 0 38px rgba(249, 115, 22, 0.48)",
-                    "0 0 58px rgba(249, 115, 22, 0.68)",
-                    "0 0 38px rgba(249, 115, 22, 0.48)",
+                    "0 0 38px rgba(6, 182, 212, 0.48)",
+                    "0 0 58px rgba(59, 130, 246, 0.68)",
+                    "0 0 38px rgba(6, 182, 212, 0.48)",
                   ],
                 }}
                 transition={{
@@ -393,9 +393,9 @@ const Dashboard = () => {
                   },
                 }}
               >
-                {/* Animated gradient ring - Orange/Red theme */}
+                {/* Animated gradient ring - Cool Cyan/Blue/Purple theme */}
                 <motion.div
-                  className="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 opacity-75"
+                  className="absolute inset-0 rounded-3xl bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 opacity-75"
                   animate={{
                     backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                   }}
@@ -403,14 +403,14 @@ const Dashboard = () => {
                   style={{ backgroundSize: "200% 200%" }}
                 />
 
-                {/* Glow on hover - Orange theme */}
-                <motion.div className="absolute -inset-1.5 rounded-[2rem] bg-orange-500/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Glow on hover - Cyan theme */}
+                <motion.div className="absolute -inset-1.5 rounded-[2rem] bg-cyan-500/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Inner content - Medium size */}
-                <div className="relative flex items-center gap-5 px-7 md:px-10 py-4 md:py-5 rounded-[calc(1.5rem-2.5px)] bg-slate-950/75 backdrop-blur-xl border border-orange-500/20 shadow-2xl">
-                  {/* Inner shine sweep - Orange theme */}
+               <div className="relative flex items-center gap-5 px-7 md:px-10 py-4 md:py-5 rounded-[calc(1.5rem-2.5px)] bg-slate-950/75 backdrop-blur-xl border border-cyan-500/20 shadow-2xl">
+                  {/* Inner shine sweep - Cyan/Blue theme */}
                   <motion.div
-                    className="pointer-events-none absolute inset-0 rounded-[calc(1.5rem-2.5px)] bg-gradient-to-r from-transparent via-orange-400/28 to-transparent"
+                    className="pointer-events-none absolute inset-0 rounded-[calc(1.5rem-2.5px)] bg-gradient-to-r from-transparent via-cyan-400/28 to-transparent"
                     animate={{ x: ["-120%", "200%"] }}
                     transition={{
                       duration: 3.2,
@@ -429,11 +429,11 @@ const Dashboard = () => {
                       ease: "easeInOut",
                     }}
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 flex items-center justify-center shadow-xl">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
                       <Brain className="w-7 h-7 text-white" />
                     </div>
                     <motion.div
-                      className="absolute inset-0 rounded-2xl border-2 border-orange-400"
+                      className="absolute inset-0 rounded-2xl border-2 border-cyan-400"
                       animate={{
                         scale: [1, 1.28, 1],
                         opacity: [0.85, 0, 0.85],
@@ -487,15 +487,6 @@ const Dashboard = () => {
                     }}
                   >
                     <Sparkles className="w-5 h-5 text-yellow-400" />
-                  </motion.div>
-
-                  {/* HOT badge */}
-                  <motion.div
-                    className="absolute -top-2 left-1/4 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-[10px] font-black text-slate-900 shadow-lg"
-                    animate={{ y: [-2, 2, -2] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    HOT 🔥
                   </motion.div>
                 </div>
               </motion.button>
