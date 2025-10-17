@@ -113,25 +113,6 @@ const MetricCard = ({
   </motion.div>
 );
 
-// AI Insight Badge
-const AIBadge = () => (
-  <motion.div
-    initial={{ scale: 0, rotate: -180 }}
-    animate={{ scale: 1, rotate: 0 }}
-    transition={{ type: "spring", stiffness: 200, damping: 15 }}
-    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 shadow-lg"
-  >
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-    >
-      <Brain className="w-4 h-4 text-purple-400" />
-    </motion.div>
-    <span className="text-xs font-bold text-purple-400">AI Powered</span>
-    <Sparkles className="w-3 h-3 text-pink-400" />
-  </motion.div>
-);
-
 const Dashboard = () => {
   const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
@@ -172,9 +153,29 @@ const Dashboard = () => {
     Number(profile.income) > 0
       ? ((totalExpenses / Number(profile.income)) * 100).toFixed(1)
       : "0";
+  const riskLabel = profile.riskAppetite
+    ? profile.riskAppetite.charAt(0).toUpperCase() +
+      profile.riskAppetite.slice(1)
+    : "Medium";
+
+  // Dynamic greeting and user initials for premium welcome UI
+  const hours = new Date().getHours();
+  const greeting =
+    hours < 12
+      ? "Good morning"
+      : hours < 18
+      ? "Good afternoon"
+      : "Good evening";
+  const initials = (user?.name || "")
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -199,7 +200,7 @@ const Dashboard = () => {
 
       {/* Premium Header */}
       <header className="glass-panel border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/80">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-6">
               <motion.div
@@ -211,19 +212,9 @@ const Dashboard = () => {
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-                  Finora
+                  Finnora
                 </h1>
               </motion.div>
-
-              <div className="hidden md:flex items-center gap-3">
-                <div className="h-8 w-px bg-white/10" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Welcome back,</p>
-                  <p className="font-semibold text-sm">{user.name}</p>
-                </div>
-              </div>
-
-              <AIBadge />
             </div>
 
             <div className="flex items-center gap-3">
@@ -265,17 +256,249 @@ const Dashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
+          {/* Welcome Banner moved from header to main */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-10"
+          >
+            <div
+              className="relative rounded-3xl overflow-hidden border border-white/10 bg-slate-900/70 backdrop-blur-2xl shadow-[0_10px_40px_rgba(2,6,23,0.45)]"
+              role="region"
+              aria-label={`Welcome ${user.name}`}
+            >
+              {/* Animated gradient sheen */}
+              <motion.div
+                className="pointer-events-none absolute inset-0"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(90deg, transparent, rgba(34,211,238,0.08), transparent, rgba(168,85,247,0.08), transparent)",
+                  backgroundSize: "200% 200%",
+                }}
+              />
+
+              {/* Soft gradient blobs */}
+              <motion.div
+                className="pointer-events-none absolute -top-12 -left-10 w-56 h-56 rounded-full bg-cyan-500/10 blur-3xl"
+                animate={{ x: [0, 10, 0], y: [0, 8, 0], scale: [1, 1.04, 1] }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.div
+                className="pointer-events-none absolute -bottom-16 -right-12 w-72 h-72 rounded-full bg-purple-500/10 blur-3xl"
+                animate={{
+                  x: [0, -12, 0],
+                  y: [0, -10, 0],
+                  scale: [1, 1.06, 1],
+                }}
+                transition={{
+                  duration: 9,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+
+              <div className="relative grid grid-cols-1 lg:grid-cols-[auto,1fr,auto] items-center gap-6 p-6 md:p-8">
+                {/* Avatar */}
+                <div className="flex items-center">
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl p-[2px] bg-gradient-to-br from-cyan-500 to-blue-600">
+                      <div className="w-full h-full rounded-[14px] bg-slate-950 flex items-center justify-center text-lg font-bold text-cyan-200">
+                        {initials || <Users className="w-5 h-5" />}
+                      </div>
+                    </div>
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl border border-cyan-400/30"
+                      animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0, 0.5] }}
+                      transition={{ duration: 2.4, repeat: Infinity }}
+                    />
+                  </div>
+                </div>
+
+                {/* Text */}
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-4 h-4 text-cyan-300" />
+                    <span className="text-xs text-cyan-200/80">
+                      Personalized
+                    </span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-300 bg-clip-text text-transparent">
+                    {greeting}, {user.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Welcome back to your financial command center.
+                  </p>
+                </div>
+
+                {/* Mini metrics */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    Savings {savingsPercentage}%
+                  </div>
+                  <div className="px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5" />
+                    Expenses {Math.round(Number(expensePercentage))}%
+                  </div>
+                  <div className="px-3 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-200 text-xs font-semibold flex items-center gap-1.5">
+                    <Shield className="w-3.5 h-3.5" />
+                    {riskLabel} risk
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Hero Section */}
           <div className="mb-12">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="flex items-center gap-3 mb-4"
+              className="flex items-center justify-between gap-4 mb-4 flex-wrap"
             >
-              <h2 className="text-5xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-400 bg-clip-text text-transparent">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-400 bg-clip-text text-transparent">
                 Financial Command Center
               </h2>
+
+              {/* Enhanced AI Investment Button (Medium-Large) */}
+              <motion.button
+                onClick={() => navigate("/investment")}
+                aria-label="Open AI Investment Hub"
+                title="Open AI Investment Hub"
+                className="group relative p-[2.5px] rounded-3xl overflow-hidden cursor-pointer"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.98 }}
+                animate={{
+                  boxShadow: [
+                    "0 0 38px rgba(249, 115, 22, 0.48)",
+                    "0 0 58px rgba(249, 115, 22, 0.68)",
+                    "0 0 38px rgba(249, 115, 22, 0.48)",
+                  ],
+                }}
+                transition={{
+                  boxShadow: {
+                    duration: 2.8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+              >
+                {/* Animated gradient ring - Orange/Red theme */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 opacity-75"
+                  animate={{
+                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                  }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  style={{ backgroundSize: "200% 200%" }}
+                />
+
+                {/* Glow on hover - Orange theme */}
+                <motion.div className="absolute -inset-1.5 rounded-[2rem] bg-orange-500/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Inner content - Medium size */}
+                <div className="relative flex items-center gap-5 px-7 md:px-10 py-4 md:py-5 rounded-[calc(1.5rem-2.5px)] bg-slate-950/75 backdrop-blur-xl border border-orange-500/20 shadow-2xl">
+                  {/* Inner shine sweep - Orange theme */}
+                  <motion.div
+                    className="pointer-events-none absolute inset-0 rounded-[calc(1.5rem-2.5px)] bg-gradient-to-r from-transparent via-orange-400/28 to-transparent"
+                    animate={{ x: ["-120%", "200%"] }}
+                    transition={{
+                      duration: 3.2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+
+                  {/* Brain icon with pulsing ring (medium-large) */}
+                  <motion.div
+                    className="relative"
+                    animate={{ rotate: [0, 5.5, -5.5, 0] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 flex items-center justify-center shadow-xl">
+                      <Brain className="w-7 h-7 text-white" />
+                    </div>
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl border-2 border-orange-400"
+                      animate={{
+                        scale: [1, 1.28, 1],
+                        opacity: [0.85, 0, 0.85],
+                      }}
+                      transition={{ duration: 2.2, repeat: Infinity }}
+                    />
+                  </motion.div>
+
+                  {/* Text block - Medium size */}
+                  <div className="flex flex-col items-start min-w-[11rem]">
+                    <span className="text-lg md:text-xl font-black bg-gradient-to-r from-orange-300 via-red-300 to-pink-200 bg-clip-text text-transparent flex items-center gap-2.5">
+                      AI Investment Hub
+                      <motion.span
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.4, repeat: Infinity }}
+                        className="text-orange-300"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </motion.span>
+                    </span>
+                    <motion.span
+                      className="text-xs md:text-sm text-orange-300/85 font-medium"
+                      animate={{ opacity: [0.65, 1, 0.65] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      Navigate to insights • 18 agents ready
+                    </motion.span>
+                  </div>
+
+                  {/* CTA pill - Orange theme */}
+                  <motion.div
+                    className="ml-2 px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500/35 to-red-500/35 border border-orange-500/45 text-xs md:text-sm font-bold text-orange-100 shadow-lg"
+                    animate={{ opacity: [0.88, 1, 0.88] }}
+                    transition={{ duration: 1.6, repeat: Infinity }}
+                  >
+                    Open →
+                  </motion.div>
+
+                  {/* Sparkle indicator */}
+                  <motion.div
+                    className="absolute -top-2 -right-2"
+                    animate={{
+                      scale: [0, 1.25, 0],
+                      rotate: [0, 180, 360],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: Infinity,
+                      repeatDelay: 1,
+                    }}
+                  >
+                    <Sparkles className="w-5 h-5 text-yellow-400" />
+                  </motion.div>
+
+                  {/* HOT badge */}
+                  <motion.div
+                    className="absolute -top-2 left-1/4 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-[10px] font-black text-slate-900 shadow-lg"
+                    animate={{ y: [-2, 2, -2] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    HOT 🔥
+                  </motion.div>
+                </div>
+              </motion.button>
             </motion.div>
             <motion.p
               initial={{ opacity: 0, x: -20 }}
@@ -1005,7 +1228,7 @@ const Dashboard = () => {
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="font-bold text-sm">Finora AI</p>
+                <p className="font-bold text-sm">Finnora AI</p>
                 <p className="text-xs text-muted-foreground">
                   Powered by advanced AI
                 </p>

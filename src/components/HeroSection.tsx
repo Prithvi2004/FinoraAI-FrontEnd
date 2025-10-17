@@ -49,7 +49,7 @@ export const HeroSection = ({
             className="mb-6"
           >
             <h1 className="text-6xl md:text-8xl font-bold mb-4 tracking-tight">
-              <span className="text-gradient-primary">Finora</span>
+              <span className="text-gradient-primary">Finnora</span>
             </h1>
           </motion.div>
 
@@ -71,7 +71,7 @@ export const HeroSection = ({
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Finora uses deep-learning intelligence to turn your income, goals,
+            Finnora uses deep-learning intelligence to turn your income, goals,
             and risk profile into a living investment strategy—automatically.
           </motion.p>
 

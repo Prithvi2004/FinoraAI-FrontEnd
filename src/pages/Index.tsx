@@ -23,7 +23,7 @@ const Index = () => {
             animate={{ opacity: 1, x: 0 }}
             className="text-2xl font-bold text-gradient-primary"
           >
-            Finora
+            Finnora
           </motion.div>
 
           <motion.div
@@ -107,7 +107,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-primary/10 py-8 px-4">
         <div className="container mx-auto text-center text-sm text-muted-foreground">
-          <p>© 2025 Finora. Your Financial Digital Twin.</p>
+          <p>© 2025 Finnora. Your Financial Digital Twin.</p>
         </div>
       </footer>
 

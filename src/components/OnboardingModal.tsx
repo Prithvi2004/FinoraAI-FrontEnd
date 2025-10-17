@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { ChevronRight, Sparkles, Home, GraduationCap, Plane, Shield } from "lucide-react";
+import {
+  ChevronRight,
+  Sparkles,
+  Home,
+  GraduationCap,
+  Plane,
+  Shield,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface OnboardingModalProps {
@@ -15,9 +22,24 @@ interface OnboardingModalProps {
 
 const goals = [
   { id: "home", label: "Home", icon: Home, color: "from-blue-500 to-cyan-500" },
-  { id: "education", label: "Education", icon: GraduationCap, color: "from-purple-500 to-pink-500" },
-  { id: "freedom", label: "Freedom", icon: Plane, color: "from-yellow-500 to-orange-500" },
-  { id: "safety", label: "Safety Net", icon: Shield, color: "from-green-500 to-emerald-500" },
+  {
+    id: "education",
+    label: "Education",
+    icon: GraduationCap,
+    color: "from-purple-500 to-pink-500",
+  },
+  {
+    id: "freedom",
+    label: "Freedom",
+    icon: Plane,
+    color: "from-yellow-500 to-orange-500",
+  },
+  {
+    id: "safety",
+    label: "Safety Net",
+    icon: Shield,
+    color: "from-green-500 to-emerald-500",
+  },
 ];
 
 export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
@@ -44,9 +66,9 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   };
 
   const toggleGoal = (goalId: string) => {
-    setSelectedGoals(prev =>
+    setSelectedGoals((prev) =>
       prev.includes(goalId)
-        ? prev.filter(id => id !== goalId)
+        ? prev.filter((id) => id !== goalId)
         : [...prev, goalId]
     );
   };
@@ -75,17 +97,24 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <h2 className="text-3xl font-bold mb-2">What lands in your account each month?</h2>
-                <p className="text-muted-foreground mb-8">Let's understand your financial foundation</p>
+                <h2 className="text-3xl font-bold mb-2">
+                  What lands in your account each month?
+                </h2>
+                <p className="text-muted-foreground mb-8">
+                  Let's understand your financial foundation
+                </p>
 
                 <div className="space-y-4">
-                  <Label htmlFor="income" className="text-lg">Monthly Income (₹)</Label>
+                  <Label htmlFor="income" className="text-lg">
+                    Monthly Income (₹)
+                  </Label>
                   <Input
                     id="income"
                     type="number"
                     placeholder="65,000"
                     value={income}
                     onChange={(e) => setIncome(e.target.value)}
+                    onWheel={(e) => e.currentTarget.blur()}
                     className="text-2xl h-14 bg-input border-primary/30 focus:border-primary"
                   />
                   {income && (
@@ -110,8 +139,12 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <h2 className="text-3xl font-bold mb-2">What future are we building?</h2>
-                <p className="text-muted-foreground mb-8">Select your financial goals</p>
+                <h2 className="text-3xl font-bold mb-2">
+                  What future are we building?
+                </h2>
+                <p className="text-muted-foreground mb-8">
+                  Select your financial goals
+                </p>
 
                 <div className="grid grid-cols-2 gap-4">
                   {goals.map((goal) => {
@@ -124,16 +157,24 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                         onClick={() => toggleGoal(goal.id)}
                         className={`
                           glass-panel rounded-xl p-6 text-left transition-all duration-300
-                          ${isSelected ? "ring-2 ring-primary glow-cyan scale-105" : "hover:scale-105"}
+                          ${
+                            isSelected
+                              ? "ring-2 ring-primary glow-cyan scale-105"
+                              : "hover:scale-105"
+                          }
                         `}
                       >
-                        <div className={`
+                        <div
+                          className={`
                           w-12 h-12 rounded-lg bg-gradient-to-br ${goal.color}
                           flex items-center justify-center mb-4
-                        `}>
+                        `}
+                        >
                           <Icon className="w-6 h-6 text-white" />
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">{goal.label}</h3>
+                        <h3 className="text-xl font-semibold mb-2">
+                          {goal.label}
+                        </h3>
                         {isSelected && (
                           <Badge className="bg-primary/20 text-primary border-primary/30">
                             Selected
@@ -155,14 +196,22 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <h2 className="text-3xl font-bold mb-2">What's your investment personality?</h2>
-                <p className="text-muted-foreground mb-8">Let's find your comfort zone</p>
+                <h2 className="text-3xl font-bold mb-2">
+                  What's your investment personality?
+                </h2>
+                <p className="text-muted-foreground mb-8">
+                  Let's find your comfort zone
+                </p>
 
                 <div className="space-y-8">
                   <div>
                     <div className="flex justify-between mb-4">
-                      <span className="text-sm text-muted-foreground">Preserve</span>
-                      <span className="text-sm text-muted-foreground">Accelerate</span>
+                      <span className="text-sm text-muted-foreground">
+                        Preserve
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        Accelerate
+                      </span>
                     </div>
                     <Slider
                       value={riskLevel}
@@ -181,7 +230,11 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-primary" />
                       <span className="text-lg font-semibold text-primary">
-                        Projected: ₹{Math.round((65000 * 12 * 10 * (1 + riskLevel[0] / 100)) / 100000)}L in 10 years
+                        Projected: ₹
+                        {Math.round(
+                          (65000 * 12 * 10 * (1 + riskLevel[0] / 100)) / 100000
+                        )}
+                        L in 10 years
                       </span>
                     </div>
                   </div>
@@ -208,12 +261,20 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                   <Sparkles className="w-16 h-16 text-white" />
                 </motion.div>
 
-                <h2 className="text-3xl font-bold mb-4">Finora Understands You</h2>
-                <p className="text-xl text-muted-foreground mb-2">AI Confidence Score</p>
-                <p className="text-6xl font-bold text-gradient-primary mb-8">92%</p>
+                <h2 className="text-3xl font-bold mb-4">
+                  Finora Understands You
+                </h2>
+                <p className="text-xl text-muted-foreground mb-2">
+                  AI Confidence Score
+                </p>
+                <p className="text-6xl font-bold text-gradient-primary mb-8">
+                  92%
+                </p>
 
                 <div className="glass-panel rounded-xl p-6 mb-8 text-left">
-                  <h4 className="font-semibold mb-4">Your Financial Digital Twin</h4>
+                  <h4 className="font-semibold mb-4">
+                    Your Financial Digital Twin
+                  </h4>
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <p>• Income: ₹{income}/month</p>
                     <p>• Goals: {selectedGoals.length} selected</p>
@@ -234,7 +295,7 @@ export const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
               <Button
                 variant="outline"
                 onClick={handleBack}
-                className="flex-1 border-primary/30"
+                className="flex-1 border-primary/30 alt-hover alt2"
               >
                 Back
               </Button>

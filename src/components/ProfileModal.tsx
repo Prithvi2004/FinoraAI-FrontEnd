@@ -228,7 +228,7 @@ export const ProfileModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="glass-panel border-primary/20 max-w-4xl p-0 overflow-hidden max-h-[90vh] overflow-y-auto">
+      <DialogContent className="glass-panel border-primary/20 max-w-4xl p-0 overflow-hidden max-h-[90vh] overflow-y-auto custom-scrollbar">
         {/* Animated Header with Progress */}
         <div className="relative bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 p-8 border-b border-primary/10">
           <motion.div
@@ -305,6 +305,7 @@ export const ProfileModal = ({
                         placeholder="65,000"
                         value={income}
                         onChange={(e) => setIncome(e.target.value)}
+                        onWheel={(e) => e.currentTarget.blur()}
                         className="pl-10 h-14 text-2xl font-bold bg-background/50 border-primary/30 focus:ring-2 focus:ring-primary/50"
                       />
                     </div>
@@ -376,6 +377,7 @@ export const ProfileModal = ({
                             placeholder={expense.placeholder}
                             value={expense.value}
                             onChange={(e) => expense.setter(e.target.value)}
+                            onWheel={(e) => e.currentTarget.blur()}
                             className="pl-8 bg-background/50 border-primary/20"
                           />
                         </div>
@@ -420,6 +422,7 @@ export const ProfileModal = ({
                                 e.target.value
                               )
                             }
+                            onWheel={(e) => e.currentTarget.blur()}
                             className="pl-8 bg-background/50 border-primary/20"
                           />
                         </div>
@@ -441,7 +444,7 @@ export const ProfileModal = ({
                   type="button"
                   variant="outline"
                   onClick={addCustomExpense}
-                  className="w-full border-dashed border-2 border-primary/30 hover:border-primary hover:bg-primary/5"
+                  className="w-full border-dashed border-2 border-primary/30 font-semibold transition-all duration-200 shadow-sm alt-hover"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Custom Category
@@ -507,6 +510,7 @@ export const ProfileModal = ({
                               onChange={(e) =>
                                 updateLoan(index, "amount", e.target.value)
                               }
+                              onWheel={(e) => e.currentTarget.blur()}
                               className="pl-8 bg-background/50 border-primary/20"
                             />
                           </div>
@@ -523,6 +527,7 @@ export const ProfileModal = ({
                               onChange={(e) =>
                                 updateLoan(index, "duration", e.target.value)
                               }
+                              onWheel={(e) => e.currentTarget.blur()}
                               className="bg-background/50 border-primary/20"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -547,6 +552,7 @@ export const ProfileModal = ({
                                   e.target.value
                                 )
                               }
+                              onWheel={(e) => e.currentTarget.blur()}
                               className="bg-background/50 border-primary/20"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -574,7 +580,7 @@ export const ProfileModal = ({
                     type="button"
                     variant="outline"
                     onClick={addLoan}
-                    className="w-full border-dashed border-2 border-primary/30 hover:border-primary hover:bg-primary/5"
+                    className="w-full border-dashed border-2 border-primary/30 font-semibold transition-all duration-200 shadow-sm alt-hover alt2"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Loan
@@ -692,6 +698,7 @@ export const ProfileModal = ({
                                       e.target.value
                                     )
                                   }
+                                  onWheel={(e) => e.currentTarget.blur()}
                                   className="pl-8 bg-background/50 border-primary/20"
                                 />
                               </div>
@@ -712,6 +719,7 @@ export const ProfileModal = ({
                                       e.target.value
                                     )
                                   }
+                                  onWheel={(e) => e.currentTarget.blur()}
                                   className="bg-background/50 border-primary/20"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -741,7 +749,7 @@ export const ProfileModal = ({
                     type="button"
                     variant="outline"
                     onClick={addGoal}
-                    className="w-full border-dashed border-2 border-primary/30 hover:border-primary hover:bg-primary/5"
+                    className="w-full border-dashed border-2 border-primary/30 font-semibold transition-all duration-200 shadow-sm alt-hover"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Goal
@@ -929,14 +937,14 @@ export const ProfileModal = ({
               <Button
                 variant="outline"
                 onClick={handleBack}
-                className="flex-1 h-12 border-primary/30 hover:bg-primary/5"
+                className="flex-1 h-12 border-primary/30 font-semibold transition-all duration-200 shadow-sm alt-hover alt2"
               >
                 ← Back
               </Button>
             )}
             <Button
               onClick={handleNext}
-              className="flex-1 h-12 bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground group font-semibold text-lg"
+              className="flex-1 h-12 bg-gradient-to-r from-primary to-secondary text-primary-foreground group font-semibold text-lg btn-gradient-opposite"
               disabled={step === 1 && !income}
             >
               {step === totalSteps ? (
