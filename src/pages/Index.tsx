@@ -117,12 +117,6 @@ const Index = () => {
               We train on patterns, never your identity. Your financial data is
               encrypted, anonymized, and yours alone.
             </p>
-            <div className="flex items-center justify-center gap-2 text-sm text-primary">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="font-medium">Bank-grade encryption</span>
-              <span className="text-muted-foreground">•</span>
-              <span className="font-medium">SOC 2 Type II certified</span>
-            </div>
           </motion.div>
         </div>
       </section>
