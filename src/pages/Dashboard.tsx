@@ -201,24 +201,24 @@ const Dashboard = () => {
 
       {/* Premium Header */}
       <header className="glass-panel border-b border-white/5 sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/80">
-        <div className="container mx-auto px-6 py-6">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 sm:gap-6">
               <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="flex items-center gap-3"
+                className="flex items-center gap-2 sm:gap-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl">
+                  <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
                 </div>
-                <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
                   Finnora
                 </h1>
               </motion.div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -226,10 +226,10 @@ const Dashboard = () => {
                 <Button
                   variant="ghost"
                   onClick={() => navigate("/")}
-                  className="text-foreground hover:text-primary hover:bg-primary/10 rounded-xl"
+                  className="text-foreground hover:text-primary hover:bg-primary/10 rounded-xl px-2 sm:px-4"
                 >
-                  <Home className="w-4 h-4 mr-2" />
-                  Home
+                  <Home className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Home</span>
                 </Button>
               </motion.div>
               <motion.div
@@ -239,10 +239,10 @@ const Dashboard = () => {
                 <Button
                   variant="ghost"
                   onClick={logout}
-                  className="text-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl"
+                  className="text-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl px-2 sm:px-4"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
+                  <LogOut className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Logout</span>
                 </Button>
               </motion.div>
             </div>
@@ -251,7 +251,7 @@ const Dashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 relative z-10">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -307,13 +307,15 @@ const Dashboard = () => {
                 }}
               />
 
-              <div className="relative grid grid-cols-1 lg:grid-cols-[auto,1fr,auto] items-center gap-6 p-6 md:p-8">
+              <div className="relative grid grid-cols-1 lg:grid-cols-[auto,1fr,auto] items-center gap-4 sm:gap-6 p-4 sm:p-6 md:p-8">
                 {/* Avatar */}
-                <div className="flex items-center">
+                <div className="flex items-center justify-center lg:justify-start">
                   <div className="relative">
-                    <div className="w-14 h-14 rounded-2xl p-[2px] bg-gradient-to-br from-cyan-500 to-blue-600">
-                      <div className="w-full h-full rounded-[14px] bg-slate-950 flex items-center justify-center text-lg font-bold text-cyan-200">
-                        {initials || <Users className="w-5 h-5" />}
+                    <div className="w-12 sm:w-14 h-12 sm:h-14 rounded-2xl p-[2px] bg-gradient-to-br from-cyan-500 to-blue-600">
+                      <div className="w-full h-full rounded-[14px] bg-slate-950 flex items-center justify-center text-base sm:text-lg font-bold text-cyan-200">
+                        {initials || (
+                          <Users className="w-4 sm:w-5 h-4 sm:h-5" />
+                        )}
                       </div>
                     </div>
                     <motion.div
@@ -325,34 +327,38 @@ const Dashboard = () => {
                 </div>
 
                 {/* Text */}
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Sparkles className="w-4 h-4 text-cyan-300" />
+                <div className="text-center lg:text-left">
+                  <div className="flex items-center gap-2 mb-1 justify-center lg:justify-start">
+                    <Sparkles className="w-3 sm:w-4 h-3 sm:h-4 text-cyan-300" />
                     <span className="text-xs text-cyan-200/80">
                       Personalized
                     </span>
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-300 bg-clip-text text-transparent">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-300 bg-clip-text text-transparent">
                     {greeting}, {user.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                     Welcome back to your financial command center.
                   </p>
                 </div>
 
                 {/* Mini metrics */}
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5" />
-                    Savings {savingsPercentage}%
+                <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2 sm:gap-3">
+                  <div className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[10px] sm:text-xs font-semibold flex items-center gap-1 sm:gap-1.5">
+                    <TrendingUp className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                    <span className="whitespace-nowrap">
+                      Savings {savingsPercentage}%
+                    </span>
                   </div>
-                  <div className="px-3 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
-                    <DollarSign className="w-3.5 h-3.5" />
-                    Expenses {Math.round(Number(expensePercentage))}%
+                  <div className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] sm:text-xs font-semibold flex items-center gap-1 sm:gap-1.5">
+                    <DollarSign className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                    <span className="whitespace-nowrap">
+                      Expenses {Math.round(Number(expensePercentage))}%
+                    </span>
                   </div>
-                  <div className="px-3 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-200 text-xs font-semibold flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5" />
-                    {riskLabel} risk
+                  <div className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-200 text-[10px] sm:text-xs font-semibold flex items-center gap-1 sm:gap-1.5">
+                    <Shield className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                    <span className="whitespace-nowrap">{riskLabel} risk</span>
                   </div>
                 </div>
               </div>
@@ -365,9 +371,9 @@ const Dashboard = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="flex items-center justify-between gap-4 mb-4 flex-wrap"
+              className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4"
             >
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-400 bg-clip-text text-transparent">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-200 to-blue-400 bg-clip-text text-transparent">
                 Financial Command Center
               </h2>
 
@@ -385,7 +391,7 @@ const Dashboard = () => {
                     ease: "easeInOut",
                   }}
                 />
-                
+
                 <div className="relative flex items-center gap-4 p-1.5 rounded-3xl bg-slate-950/90 backdrop-blur-xl border border-cyan-500/30 shadow-2xl">
                   {/* Brain icon with pulsing ring */}
                   <motion.div
@@ -455,26 +461,26 @@ const Dashboard = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-muted-foreground text-lg mb-6"
+              className="text-muted-foreground text-sm sm:text-base md:text-lg mb-4 sm:mb-6"
             >
               AI-powered analytics and real-time insights for smarter financial
               decisions
             </motion.p>
 
             {/* Tab Navigation */}
-            <div className="flex gap-3 mb-8">
+            <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8 overflow-x-auto pb-2">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab("overview")}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold transition-all whitespace-nowrap ${
                   activeTab === "overview"
                     ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20"
                     : "glass-panel text-muted-foreground hover:text-white"
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <BarChart3 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   Overview
                 </div>
               </motion.button>
@@ -482,14 +488,14 @@ const Dashboard = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab("details")}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold transition-all whitespace-nowrap ${
                   activeTab === "details"
                     ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20"
                     : "glass-panel text-muted-foreground hover:text-white"
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <Target className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <Target className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   Details
                 </div>
               </motion.button>
@@ -506,7 +512,7 @@ const Dashboard = () => {
                 transition={{ duration: 0.3 }}
               >
                 {/* Key Metrics Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
                   <MetricCard
                     icon={Wallet}
                     label="Monthly Income"
