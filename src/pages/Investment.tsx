@@ -305,7 +305,7 @@ const Investment = () => {
           total_loans: totalLoans,
           loan_details: profile.loans.map((loan: any) => ({
             amount: Number(loan.amount || 0),
-            duration_months: Number(loan.duration || 0),
+            duration_years: Number(loan.duration || 0),
             interest_rate: Number(loan.interestRate || 0),
           })),
         },
@@ -314,7 +314,7 @@ const Investment = () => {
           goal_details: profile.goals.map((goal: any) => ({
             type: goal.type,
             target_amount: Number(goal.targetAmount || 0),
-            timeline_months: Number(goal.timeline || 0),
+            timeline_years: Number(goal.timeline || 0),
           })),
         },
         risk_profile: {
