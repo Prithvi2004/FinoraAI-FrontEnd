@@ -67,7 +67,7 @@ export const ProfileModal = ({
   const [miscellaneous, setMiscellaneous] = useState("");
   const [entertainment, setEntertainment] = useState("");
   const [customExpenses, setCustomExpenses] = useState<
-    { name: string; amount: string }[]
+    { id: string; name: string; amount: string }[]
   >([]);
 
   // Step 2: Liabilities
@@ -105,7 +105,13 @@ export const ProfileModal = ({
       setHealth(profile.expenses?.health || "");
       setMiscellaneous(profile.expenses?.miscellaneous || "");
       setEntertainment(profile.expenses?.entertainment || "");
-      setCustomExpenses(profile.expenses?.custom || []);
+      setCustomExpenses(
+        (profile.expenses?.custom || []).map((exp: any) => ({
+          id: exp.id || Date.now().toString() + Math.random(),
+          name: exp.name || "",
+          amount: exp.amount || "",
+        }))
+      );
       setLoans(profile.loans || []);
       setGoals(profile.goals || []);
       setRiskAppetite(profile.riskAppetite || "medium");
@@ -165,7 +171,10 @@ export const ProfileModal = ({
   };
 
   const addCustomExpense = () => {
-    setCustomExpenses([...customExpenses, { name: "", amount: "" }]);
+    setCustomExpenses([
+      ...customExpenses,
+      { id: Date.now().toString() + Math.random(), name: "", amount: "" },
+    ]);
   };
 
   const removeCustomExpense = (index: number) => {
@@ -177,8 +186,11 @@ export const ProfileModal = ({
     field: "name" | "amount",
     value: string
   ) => {
-    const updated = [...customExpenses];
-    updated[index][field] = value;
+    console.log("updateCustomExpense called:", { index, field, value });
+    const updated = customExpenses.map((expense, i) =>
+      i === index ? { ...expense, [field]: value } : expense
+    );
+    console.log("Updated expenses:", updated);
     setCustomExpenses(updated);
   };
 
@@ -393,36 +405,31 @@ export const ProfileModal = ({
                       Custom Categories
                     </h4>
                     {customExpenses.map((expense, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex gap-2"
-                      >
+                      <div key={expense.id} className="flex gap-2 items-center">
                         <Input
                           placeholder="Category name"
                           value={expense.name}
                           onChange={(e) =>
                             updateCustomExpense(index, "name", e.target.value)
                           }
-                          className="bg-background/50 border-primary/20"
+                          className="bg-background/50 border-primary/20 flex-1"
                         />
-                        <div className="relative flex-1">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        <div className="relative flex-[1.5] min-w-[180px]">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none">
                             ₹
                           </span>
                           <Input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
                             placeholder="Amount"
                             value={expense.amount}
-                            onChange={(e) =>
-                              updateCustomExpense(
-                                index,
-                                "amount",
-                                e.target.value
-                              )
-                            }
-                            onWheel={(e) => e.currentTarget.blur()}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(
+                                /[^\d]/g,
+                                ""
+                              );
+                              updateCustomExpense(index, "amount", value);
+                            }}
                             className="pl-8 bg-background/50 border-primary/20"
                           />
                         </div>
@@ -431,11 +438,11 @@ export const ProfileModal = ({
                           variant="ghost"
                           size="icon"
                           onClick={() => removeCustomExpense(index)}
-                          className="hover:bg-destructive/20 hover:text-destructive"
+                          className="hover:bg-destructive/20 hover:text-destructive shrink-0"
                         >
                           <X className="w-4 h-4" />
                         </Button>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 )}
